@@ -1,6 +1,5 @@
-# calculator/pkg/calculator.py
-
 from collections.abc import Callable
+import math
 
 
 class Calculator:
@@ -10,12 +9,14 @@ class Calculator:
             "-": lambda a, b: a - b,
             "*": lambda a, b: a * b,
             "/": lambda a, b: a / b,
+            "^": lambda a, b: a ** b,
         }
         self.precedence: dict[str, int] = {
             "+": 1,
             "-": 1,
             "*": 2,
             "/": 2,
+            "^": 3,
         }
 
     def evaluate(self, expression: str) -> float | None:
@@ -27,9 +28,17 @@ class Calculator:
     def _evaluate_infix(self, tokens: list[str]) -> float:
         values: list[float] = []
         operators: list[str] = []
-
-        for token in tokens:
-            if token in self.operators:
+        i = 0
+        while i < len(tokens):
+            token = tokens[i]
+            if token == "sqrt":
+                if i + 1 >= len(tokens):
+                    raise ValueError("Missing operand for sqrt")
+                operand = float(tokens[i+1])
+                values.append(math.sqrt(operand))
+                i += 2
+                continue
+            elif token in self.operators:
                 while (
                     operators
                     and operators[-1] in self.operators
@@ -42,6 +51,7 @@ class Calculator:
                     values.append(float(token))
                 except ValueError:
                     raise ValueError(f"invalid token: {token}")
+            i += 1
 
         while operators:
             self._apply_operator(operators, values)

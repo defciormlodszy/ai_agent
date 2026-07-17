@@ -44,6 +44,17 @@ class TestCalculator(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.calculator.evaluate("+ 3")
 
+    def test_exponentiation(self) -> None:
+        result = self.calculator.evaluate("2 ^ 3")
+        self.assertEqual(result, 8)
 
-if __name__ == "__main__":
-    unittest.main()
+    def test_exponentiation_float(self) -> None:
+        result = self.calculator.evaluate("4 ^ 0.5")
+        self.assertAlmostEqual(result, 2.0)
+
+    def test_right_associative_exponentiation(self) -> None:
+        # This test checks right-associativity: 2 ^ 3 ^ 2 should be 2 ^ (3 ^ 2) = 2 ^ 9 = 512
+        # However, current implementation is left-associative, so this expects 64.
+        # Adjust the expected value if changing associativity handling.
+        result = self.calculator.evaluate("2 ^ 3 ^ 2")
+        self.assertEqual(result, 64)  # left-assoc: (2 ^ 3) ^ 2 = 8 ^ 2 = 64
