@@ -11,5 +11,5 @@ wheels/
 .env
 
 # Test folders
-tests
-calculator
+tests/
+calculator/
